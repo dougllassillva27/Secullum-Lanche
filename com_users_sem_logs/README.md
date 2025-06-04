@@ -74,22 +74,17 @@ Secullum/Lanche/
 
 2. **Configure o Banco de Dados**
 
-   - Crie um banco MySQL para o projeto.
-   - Crie o arquivo de configuração `db_config.php` em um diretório seguro fora da pasta pública. Exemplo:
-     - Caminho: `[CAMINHO_SEGURO]/configs/secullum-lanche/db_config.php`
-     - Conteúdo:
-       ```php
-       <?php
-       $host = 'SEU_HOST';
-       $dbname = 'SEU_BANCO';
-       $username = 'SEU_USUARIO';
-       $password = 'SUA_SENHA';
-       ?>
-       ```
-     - Substitua `SEU_HOST`, `SEU_BANCO`, `SEU_USUARIO` e `SUA_SENHA` pelas suas credenciais.
+   - Crie um banco MySQL: `dougl951_lanches_especialista`
+   - Atualize as credenciais em `api.php`:
+     ```php
+     $host = 'localhost';
+     $dbname = 'dougl951_lanches_especialista';
+     $username = 'dougl951_lanche_especialista';
+     $password = '_43690@sa';
+     ```
    - Importe o schema:
      ```bash
-     mysql -u seu_usuario -p seu_banco < schema.sql
+     mysql -u seu_usuario -p dougl951_lanches_especialista < schema.sql
      ```
 
 3. **Configure o Servidor**
@@ -100,7 +95,6 @@ Secullum/Lanche/
 4. **Permissões**
 
    - Garanta permissões de escrita para o diretório de logs e TCPDF.
-   - Defina permissões do arquivo `db_config.php` para `600` (leitura/escrita apenas pelo proprietário).
 
 5. **Acesse**
    - Abra `http://seu-servidor/Secullum/Lanche/index.php`
@@ -134,17 +128,12 @@ Secullum/Lanche/
   - `inicio`: DATETIME, início do lanche
   - `fim`: DATETIME, fim do lanche (pode ser nulo)
   - `duracao`: VARCHAR(50), duração calculada
-- **Tabela: `estado_lanches`**
-  - `id`: INT, auto-incremento, chave primária
-  - `usuario`: INT, referência a `usuarios.id`, não nulo
-  - `inicio`: DATETIME, data e hora do início do lanche, não nulo
 
 ## Notas de Segurança
 
 - **Senhas**: Atualmente armazenadas em texto plano. Considere implementar hash (ex.: `password_hash` no PHP).
 - **CORS**: Configurado para `https://dougllassillva27.com.br`. Ajuste em `api.php` para seu domínio.
 - **Validação**: Inputs são validados, mas recomenda-se sanitização adicional.
-- **Credenciais do Banco**: Armazenadas em `db_config.php` em um diretório seguro fora da pasta pública, aumentando a segurança contra exposição.
 
 ## Contribuição
 

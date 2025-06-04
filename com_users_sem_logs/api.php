@@ -6,7 +6,12 @@ header('Access-Control-Allow-Methods: GET, POST');
 header('Access-Control-Allow-Headers: Content-Type');
 
 require_once 'tcpdf/tcpdf.php';
-require_once '/home4/dougl951/configs/secullum-lanche/db_config.php';
+
+// Configuração do banco de dados
+$host = 'localhost';
+$dbname = 'dougl951_lanches_especialista';
+$username = 'dougl951_lanche_especialista';
+$password = '_43690@sa';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
