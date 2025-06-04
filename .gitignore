@@ -4,3 +4,4 @@ node_modules/
 .env
 com_users/
 sem_users/
+com_users_logs/

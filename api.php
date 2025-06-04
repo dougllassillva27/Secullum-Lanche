@@ -16,9 +16,7 @@ $password = '_43690@sa';
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    error_log("Conexão com o banco de dados estabelecida com sucesso.");
 } catch (PDOException $e) {
-    error_log("Conexão falhou: " . $e->getMessage());
     http_response_code(500);
     echo json_encode(['error' => 'Conexão falhou: ' . $e->getMessage()]);
     exit;
@@ -49,7 +47,6 @@ function formatDuration($seconds) {
         $remainingSeconds = $seconds % 60;
         return "{$totalMinutes}m {$remainingSeconds}s";
     } catch (Exception $e) {
-        error_log("Erro ao formatar duração: " . $e->getMessage());
         return 'Indisponível';
     }
 }
@@ -103,7 +100,6 @@ class MYPDF extends TCPDF {
 }
 
 try {
-    error_log("Ação solicitada: $action");
     switch ($action) {
         case 'login':
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -123,12 +119,10 @@ try {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_nome'] = $user['nome'];
             $_SESSION['user_tipo'] = $user['tipo'];
-            error_log("Login realizado: user_id={$user['id']}, nome={$user['nome']}, tipo={$user['tipo']}");
             sendResponse(['success' => true, 'id' => $user['id'], 'nome' => $user['nome'], 'tipo' => $user['tipo']]);
             break;
 
         case 'check_session':
-            error_log("Verificando sessão: user_id=" . ($_SESSION['user_id'] ?? 'não definido') . ", user_nome=" . ($_SESSION['user_nome'] ?? 'não definido') . ", user_tipo=" . ($_SESSION['user_nome'] ?? 'não definido'));
             if (isLoggedIn()) {
                 sendResponse(['success' => true, 'id' => $_SESSION['user_id'], 'nome' => $_SESSION['user_nome'], 'tipo' => $_SESSION['user_tipo']]);
             } else {
@@ -166,7 +160,6 @@ try {
                     ]
                 ]);
             } catch (PDOException $e) {
-                error_log("Erro na ação status: " . $e->getMessage());
                 http_response_code(500);
                 sendResponse(['error' => 'Erro ao obter status: ' . $e->getMessage()]);
             }
@@ -198,7 +191,6 @@ try {
                 sendResponse(['error' => 'Permissão negada']);
             }
             try {
-                error_log("Ação start: usuario=$usuario, session_user_id=" . ($_SESSION['user_id'] ?? 'não definido'));
                 $stmt = $pdo->prepare("SELECT tipo FROM usuarios WHERE id = :usuario");
                 $stmt->execute(['usuario' => $usuario]);
                 $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -228,7 +220,6 @@ try {
                 $result = $stmt->execute(['usuario' => $usuario]);
                 sendResponse(['success' => $result]);
             } catch (PDOException $e) {
-                error_log("Erro na ação start: " . $e->getMessage() . " | usuario=$usuario");
                 sendResponse(['error' => 'Erro ao iniciar lanche: ' . $e->getMessage()]);
             }
             break;
@@ -252,7 +243,6 @@ try {
                 $result = $stmt->execute(['usuario' => $usuario]);
                 sendResponse(['success' => $result]);
             } catch (PDOException $e) {
-                error_log("Erro na ação end: " . $e->getMessage() . " | usuario=$usuario");
                 sendResponse(['error' => 'Erro ao finalizar lanche: ' . $e->getMessage()]);
             }
             break;
@@ -344,10 +334,8 @@ try {
                 $userId = (int)$_SESSION['user_id'];
                 $stmt = $pdo->prepare("UPDATE usuarios SET senha = :senha WHERE id = :id");
                 $result = $stmt->execute(['senha' => $newPassword, 'id' => $userId]);
-                error_log("Alteração de senha própria: user_id=$userId, sucesso=" . ($result ? 'true' : 'false'));
                 sendResponse(['success' => $result]);
             } catch (PDOException $e) {
-                error_log("Erro na ação change_own_password: " . $e->getMessage() . " | user_id=$userId");
                 sendResponse(['error' => 'Erro ao alterar senha: ' . $e->getMessage()]);
             }
             break;
@@ -374,7 +362,6 @@ try {
             break;
 
         case 'history':
-            error_log("Ação history: Verificando sessão: user_id=" . ($_SESSION['user_id'] ?? 'não definido') . ", user_tipo=" . ($_SESSION['user_tipo'] ?? 'não definido'));
             if (!isAdmin()) {
                 sendResponse(['error' => 'Permissão negada']);
             }
@@ -401,7 +388,6 @@ try {
             }
             $sql .= " ORDER BY l.inicio DESC LIMIT :limit";
             try {
-                error_log("Preparando consulta history: SQL=$sql, Params=" . json_encode($params));
                 $stmt = $pdo->prepare($sql);
                 foreach ($params as $key => $value) {
                     $stmt->bindValue(":$key", $value);
@@ -409,16 +395,13 @@ try {
                 $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
                 $stmt->execute();
                 $history = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                error_log("Registros retornados: " . count($history) . ", Primeiro registro: " . json_encode($history[0] ?? []));
                 sendResponse($history);
             } catch (PDOException $e) {
-                error_log("Erro na consulta history: " . $e->getMessage() . " | SQL=$sql | Params=" . json_encode($params));
                 throw new Exception("Erro na consulta do histórico: " . $e->getMessage());
             }
             break;
 
         case 'report':
-            error_log("Ação report: Verificando sessão: user_id=" . ($_SESSION['user_id'] ?? 'não definido') . ", user_tipo=" . ($_SESSION['user_tipo'] ?? 'não definido'));
             if (!isAdmin()) {
                 sendResponse(['error' => 'Permissão negada']);
             }
@@ -427,13 +410,10 @@ try {
             }
             ob_start();
             if (!file_exists('tcpdf/tcpdf.php')) {
-                error_log("Erro: Arquivo tcpdf.php não encontrado em " . __DIR__ . "/tcpdf");
                 http_response_code(500);
                 ob_end_clean();
                 sendResponse(['error' => 'Biblioteca TCPDF não encontrada']);
             }
-            error_log("TCPDF carregado com sucesso.");
-
             $data_inicio = $_GET['data_inicio'] ?? '';
             $data_fim = $_GET['data_fim'] ?? '';
             $users = isset($_GET['users']) ? explode(',', $_GET['users']) : [];
@@ -460,7 +440,6 @@ try {
             }
             $sql .= " ORDER BY l.inicio DESC";
             try {
-                error_log("Preparando consulta report: SQL=$sql, Params=" . json_encode($params));
                 $stmt = $pdo->prepare($sql);
                 foreach ($params as $key => $value) {
                     $paramType = is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR;
@@ -468,7 +447,6 @@ try {
                 }
                 $stmt->execute();
                 $history = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                error_log("Consulta report executada com sucesso. Registros retornados: " . count($history));
                 if ($durationFilter === 'above15') {
                     $history = array_filter($history, function($log) {
                         if (is_null($log['fim']) || $log['fim'] === '' || $log['fim'] === '0000-00-00 00:00:00') {
@@ -484,7 +462,6 @@ try {
                     });
                 }
             } catch (PDOException $e) {
-                error_log("Erro na consulta report: " . $e->getMessage() . " | SQL=$sql | Params=" . json_encode($params));
                 ob_end_clean();
                 throw new Exception("Erro na consulta do relatório: " . $e->getMessage());
             }
@@ -506,7 +483,6 @@ try {
                 $fill = false;
 
                 foreach ($history as $log) {
-                    error_log("Processando log: " . json_encode($log));
                     if ($pdf->GetY() > $pdf->getPageHeight() - 15 - 7) {
                         $pdf->AddPage();
                         $pdf->SetY($pdf->startY);
@@ -541,14 +517,11 @@ try {
                     $nomeArquivo = 'Relatorio_Lanches_' . $dataFormatada . '.pdf';
                 }
 
-                error_log("Gerando PDF: $nomeArquivo");
                 ob_end_clean();
                 $pdf->Output($nomeArquivo, 'I');
-                error_log("PDF gerado e enviado com sucesso.");
                 exit;
             } catch (Exception $e) {
                 ob_end_clean();
-                error_log("Erro ao gerar PDF: " . $e->getMessage());
                 http_response_code(500);
                 sendResponse(['error' => 'Erro ao gerar relatório PDF: ' . $e->getMessage()]);
             }
@@ -558,7 +531,6 @@ try {
             sendResponse(['error' => 'Ação inválida']);
     }
 } catch (Exception $e) {
-    error_log("Erro no api.php: " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine());
     http_response_code(500);
     sendResponse(['error' => 'Erro no servidor: ' . $e->getMessage()]);
 }

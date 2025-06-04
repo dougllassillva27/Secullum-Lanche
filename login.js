@@ -5,8 +5,6 @@ function showModal(message) {
   if (modalMessage) {
     modalMessage.textContent = message;
     document.getElementById('modal').style.display = 'flex';
-  } else {
-    console.error('Elemento modal-message não encontrado');
   }
 }
 
@@ -44,18 +42,16 @@ async function login() {
         nome: data.nome,
         tipo: data.tipo,
       };
-      window.location.href = 'lanches.php'; // Redireciona para lanches.php
+      window.location.href = 'lanches.php';
     } else {
       showModal(data.error || 'Erro ao fazer login');
     }
   } catch (error) {
-    console.error('Erro no login:', error);
     showModal(`Erro ao conectar com o servidor: ${error.message}`);
   }
 }
 
 window.onload = async function () {
-  console.log('window.onload executando em login.js...');
   try {
     const response = await fetch('api.php?action=check_session', {
       method: 'GET',
@@ -66,7 +62,7 @@ window.onload = async function () {
     }
     const data = await response.json();
     if (data.success) {
-      window.location.href = 'lanches.php'; // Redireciona para lanches.php se já estiver logado
+      window.location.href = 'lanches.php';
     } else {
       const loginContainer = document.getElementById('login-container');
       if (loginContainer) {
@@ -74,7 +70,6 @@ window.onload = async function () {
       }
     }
   } catch (error) {
-    console.error('Erro ao verificar sessão:', error);
     showModal(`Erro ao verificar sessão: ${error.message}`);
   }
 };

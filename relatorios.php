@@ -6,7 +6,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_tipo'] !== 'admin') {
 }
 include_once $_SERVER['DOCUMENT_ROOT'] . '/inc/versao.php';
 $base = '/Secullum/Lanche';
-error_log('relatorios.php carregado, base: ' . $base);
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">

@@ -6,7 +6,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_tipo'] !== 'admin') {
     header('Location: login.php');
     exit;
 }
-error_log('gerenciamento_usuarios.php carregado, base: ' . $base); // Log para depuração
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -33,7 +32,6 @@ error_log('gerenciamento_usuarios.php carregado, base: ' . $base); // Log para d
         </div>
     </div>
 
-    <!-- Modal para Adicionar/Editar Usuário -->
     <div id="user-modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeUserModal()">×</span>
@@ -61,7 +59,6 @@ error_log('gerenciamento_usuarios.php carregado, base: ' . $base); // Log para d
         </div>
     </div>
 
-    <!-- Modal para Alterar Senha -->
     <div id="password-modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closePasswordModal()">×</span>
@@ -77,7 +74,6 @@ error_log('gerenciamento_usuarios.php carregado, base: ' . $base); // Log para d
         </div>
     </div>
 
-    <!-- Modal para Confirmar Exclusão -->
     <div id="delete-modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeDeleteModal()">×</span>
@@ -91,7 +87,6 @@ error_log('gerenciamento_usuarios.php carregado, base: ' . $base); // Log para d
         </div>
     </div>
 
-    <!-- Modal para Mensagens -->
     <div id="message-modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeMessageModal()">×</span>
@@ -102,7 +97,6 @@ error_log('gerenciamento_usuarios.php carregado, base: ' . $base); // Log para d
 
     <script>
         window.addEventListener('error', function(e) {
-            console.error('Erro no JavaScript:', e.message, 'Arquivo:', e.filename, 'Linha:', e.lineno);
         });
         document.addEventListener('DOMContentLoaded', function() {
             const mainContainer = document.getElementById('main-container');

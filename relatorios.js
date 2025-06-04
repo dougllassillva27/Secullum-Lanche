@@ -7,8 +7,6 @@ function showModal(message) {
   if (modalMessage) {
     modalMessage.textContent = message;
     document.getElementById('modal').style.display = 'flex';
-  } else {
-    console.error('Elemento modal-message não encontrado');
   }
 }
 
@@ -28,7 +26,6 @@ async function logout() {
     currentUser = null;
     window.location.href = 'index.php';
   } catch (error) {
-    console.error('Erro ao sair:', error);
     showModal(`Erro ao sair: ${error.message}`);
   }
 }
@@ -43,7 +40,6 @@ async function loadUsers() {
     allUsers = users;
     const userCheckboxes = document.getElementById('user-checkboxes');
     if (!userCheckboxes) {
-      console.error('Erro: Elemento #user-checkboxes não encontrado');
       showModal('Erro: Não foi possível carregar a lista de usuários.');
       return;
     }
@@ -78,7 +74,6 @@ async function loadUsers() {
       updateFilterButtonState();
     });
   } catch (error) {
-    console.error('Erro ao carregar usuários:', error);
     showModal('Erro ao carregar usuários: ' + error.message);
   }
 }
@@ -119,7 +114,6 @@ function getTurno(inicio) {
     if (time >= '13:00:00' && time <= '18:00:00') return 'Tarde';
     return 'Outro';
   } catch (error) {
-    console.error('Erro ao calcular turno:', error);
     return 'Outro';
   }
 }
@@ -195,6 +189,7 @@ async function filtrarRelatorio(explicit = false) {
         }
         reportPreview.innerHTML = `
           <h2>Relatório de Lanches</h2>
+          sbagli
           <div class="report-meta">
             <span>Gerado em: ${now}</span>
             <span>Filtro: ${filtroTexto}</span>
@@ -241,7 +236,6 @@ async function filtrarRelatorio(explicit = false) {
       }
     }
   } catch (error) {
-    console.error('Erro ao filtrar relatório:', error);
     showModal(`Erro ao carregar relatório: ${error.message}`);
     gerarPdfBtn.disabled = true;
   }
@@ -262,7 +256,6 @@ async function gerarRelatorio() {
     url += `&${params.toString()}`;
     window.open(url, '_blank');
   } catch (error) {
-    console.error('Erro ao gerar relatório:', error);
     showModal(`Erro ao gerar relatório: ${error.message}`);
   }
 }
@@ -278,7 +271,6 @@ function formatarDuracaoHistorico(duracao, inicio, fim) {
     const totalSegundos = Math.floor((diffMs % 60000) / 1000);
     return `${totalMinutos}m ${totalSegundos}s`;
   } catch (error) {
-    console.error('Erro ao formatar duração:', error);
     return 'Indisponível';
   }
 }
@@ -297,13 +289,11 @@ function formatarData(data) {
       second: '2-digit',
     });
   } catch (error) {
-    console.error('Erro ao formatar data:', error);
     return 'Sem horário fim';
   }
 }
 
 window.onload = async function () {
-  console.log('Executando window.onload em relatorios.js');
   try {
     const response = await fetch('api.php?action=check_session', {
       method: 'GET',
@@ -331,9 +321,7 @@ window.onload = async function () {
             input.addEventListener('click', () => {
               try {
                 input.showPicker();
-              } catch (e) {
-                console.warn('showPicker não suportado:', e);
-              }
+              } catch (e) {}
             });
             input.addEventListener('input', updateFilterButtonState);
           }
@@ -346,7 +334,6 @@ window.onload = async function () {
       window.location.href = 'index.php';
     }
   } catch (error) {
-    console.error('Erro ao verificar sessão:', error);
     showModal(`Erro ao carregar dados: ${error.message}`);
     window.location.href = 'index.php';
   }

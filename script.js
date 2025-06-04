@@ -4,17 +4,11 @@ let currentFilter = { inicio: null, fim: null };
 let isOpeningChangePasswordModal = false;
 
 function showModal(message) {
-  console.log('Exibindo modal com mensagem:', message);
   const modalMessage = document.getElementById('modal-message');
   const modal = document.getElementById('modal');
   if (modalMessage && modal) {
     modalMessage.textContent = message;
     modal.style.display = 'flex';
-  } else {
-    console.error('Elementos modal-message ou modal não encontrados:', {
-      modalMessage: !!modalMessage,
-      modal: !!modal,
-    });
   }
 }
 
@@ -30,11 +24,6 @@ function toggleMenu() {
   const manageUsersBtn = document.getElementById('manage-users-btn');
   const reportBtn = document.getElementById('report-btn-modal');
   if (!menuModal || !manageUsersBtn || !reportBtn) {
-    console.error('Elementos do menu não encontrados:', {
-      menuModal: !!menuModal,
-      manageUsersBtn: !!manageUsersBtn,
-      reportBtn: !!reportBtn,
-    });
     showModal('Erro ao abrir o menu');
     return;
   }
@@ -45,7 +34,6 @@ function toggleMenu() {
     manageUsersBtn.style.display = isAdmin ? 'block' : 'none';
     reportBtn.style.display = isAdmin ? 'block' : 'none';
   } catch (error) {
-    console.error('Erro ao manipular menu:', error);
     showModal('Erro ao abrir/fechar menu');
   }
 }
@@ -53,13 +41,10 @@ function toggleMenu() {
 function openChangePasswordModal(event) {
   if (event) {
     event.stopPropagation();
-    console.log('Propagação do evento de clique parada');
   }
-  console.log('Abrindo modal de alteração de senha');
   isOpeningChangePasswordModal = true;
   const menuModal = document.getElementById('menu-modal');
   if (menuModal && menuModal.style.display === 'flex') {
-    console.log('Fechando menu-modal antes de abrir change-password-modal');
     menuModal.style.display = 'none';
   }
   const modal = document.getElementById('change-password-modal');
@@ -67,16 +52,10 @@ function openChangePasswordModal(event) {
   if (modal && form) {
     form.reset();
     modal.style.display = 'flex';
-    console.log('Modal change-password-modal aberto. Estilo atual:', modal.style.display);
     setTimeout(() => {
-      console.log('Verificando visibilidade após 100ms:', modal.style.display, window.getComputedStyle(modal).display);
       isOpeningChangePasswordModal = false;
     }, 100);
   } else {
-    console.error('Elementos do modal de senha não encontrados:', {
-      modal: !!modal,
-      form: !!form,
-    });
     showModal('Erro: Não foi possível abrir o formulário de senha.');
     isOpeningChangePasswordModal = false;
   }
@@ -88,7 +67,6 @@ function closeChangePasswordModal() {
   if (modal && form) {
     modal.style.display = 'none';
     form.reset();
-    console.log('Modal change-password-modal fechado.');
   }
 }
 
@@ -101,7 +79,6 @@ async function logout() {
     currentUser = null;
     window.location.href = 'index.php';
   } catch (error) {
-    console.error('Erro ao sair:', error);
     showModal(`Erro ao sair do sistema: ${error.message}`);
   }
 }
@@ -115,7 +92,6 @@ async function getUserName(userId) {
     const data = await response.json();
     return data.nome || 'Desconhecido';
   } catch (error) {
-    console.error('Erro ao obter nome do usuário:', error);
     return 'Desconhecido';
   }
 }
@@ -152,7 +128,6 @@ async function toggleLanche(usuario) {
       showModal(data.error || `Erro ao ${action === 'start' ? 'iniciar' : 'finalizar'} lanche`);
     }
   } catch (error) {
-    console.error('Erro ao manipular lanche:', error);
     showModal(`Erro ao conectar com o servidor: ${error.message}`);
   }
 }
@@ -168,7 +143,6 @@ async function gerarRelatorio() {
     }
     window.open(url, '_blank');
   } catch (error) {
-    console.error('Erro ao gerar relatório:', error);
     showModal(`Erro ao gerar relatório: ${error.message}`);
   }
 }
@@ -183,7 +157,6 @@ function formatarDuracaoAtiva(inicio) {
     const totalSegundos = Math.floor((diffMs % 60000) / 1000);
     return `${totalMinutos}m ${totalSegundos}s`;
   } catch (error) {
-    console.error('Erro ao formatar duração ativa:', error);
     return 'Indisponível';
   }
 }
@@ -199,7 +172,6 @@ async function atualizarInterface() {
       throw new Error(`Erro ao obter status: HTTP ${response.status}`);
     }
     const estado = await response.json();
-    // Atualizar seção "Pessoas em Lanche"
     const lancheAtivo = document.getElementById('lanche-ativo');
     if (lancheAtivo) {
       const especialistaContainer = lancheAtivo.querySelector('.lanche-ativo-column:nth-child(1)');
@@ -221,7 +193,6 @@ async function atualizarInterface() {
         }
         especialistaContainer.innerHTML = htmlEspecialista || '<p id="especialista-mensagem">Nenhum especialista em lanche</p>';
         suporteContainer.innerHTML = htmlSuporte || '<p id="suporte-mensagem">Nenhum ponto/acesso em lanche</p>';
-        // Adicionar cabeçalhos dinamicamente
         if (!especialistaContainer.querySelector('h3')) {
           especialistaContainer.insertAdjacentHTML('afterbegin', '<h3><i class="fas fa-star"></i> Especialista</h3>');
         }
@@ -232,13 +203,9 @@ async function atualizarInterface() {
         especialistaContainer.innerHTML = '<h3><i class="fas fa-star"></i> Especialista</h3><p id="especialista-mensagem">Nenhum especialista em lanche</p>';
         suporteContainer.innerHTML = '<h3><i class="fas fa-headset"></i> Ponto/Acesso</h3><p id="suporte-mensagem">Nenhum ponto/acesso em lanche</p>';
       }
-    } else {
-      console.error('Elemento lanche-ativo não encontrado');
     }
-    // Atualizar user-container apenas para não-admins
     const userContainer = document.getElementById('user-container');
     if (!userContainer) {
-      console.error('Elemento user-container não encontrado');
       return;
     }
     if (currentUser.tipo !== 'admin') {
@@ -278,13 +245,11 @@ async function atualizarInterface() {
       userContainer.style.display = 'none';
     }
   } catch (error) {
-    console.error('Erro ao atualizar interface:', error);
     showModal(`Erro ao carregar dados: ${error.message}`);
   }
 }
 
 async function atualizarLancheAtivo() {
-  console.log('Atualizando lanche ativo...');
   try {
     const response = await fetch('api.php?action=status');
     if (!response.ok) {
@@ -312,7 +277,6 @@ async function atualizarLancheAtivo() {
         }
         especialistaContainer.innerHTML = htmlEspecialista || '<p id="especialista-mensagem">Nenhum especialista em lanche</p>';
         suporteContainer.innerHTML = htmlSuporte || '<p id="suporte-mensagem">Nenhum ponto/acesso em lanche</p>';
-        // Adicionar cabeçalhos dinamicamente
         if (!especialistaContainer.querySelector('h3')) {
           especialistaContainer.insertAdjacentHTML('afterbegin', '<h3><i class="fas fa-star"></i> Especialista</h3>');
         }
@@ -323,16 +287,11 @@ async function atualizarLancheAtivo() {
         especialistaContainer.innerHTML = '<h3><i class="fas fa-star"></i> Especialista</h3><p id="especialista-mensagem">Nenhum especialista em lanche</p>';
         suporteContainer.innerHTML = '<h3><i class="fas fa-headset"></i> Ponto/Acesso</h3><p id="suporte-mensagem">Nenhum ponto/acesso em lanche</p>';
       }
-    } else {
-      console.error('Elemento lanche-ativo não encontrado');
     }
-  } catch (error) {
-    console.error('Erro ao atualizar lanche ativo:', error);
-  }
+  } catch (error) {}
 }
 
 function startLancheRefresh() {
-  console.log('Iniciando refresh automático...');
   stopLancheRefresh();
   refreshInterval = setInterval(atualizarLancheAtivo, 30000);
 }
@@ -341,7 +300,6 @@ function stopLancheRefresh() {
   if (refreshInterval) {
     clearInterval(refreshInterval);
     refreshInterval = null;
-    console.log('Refresh automático parado.');
   }
 }
 
@@ -356,7 +314,6 @@ function formatarData(data) {
       second: '2-digit',
     });
   } catch (error) {
-    console.error('Erro ao formatar data:', error);
     return 'Indisponível';
   }
 }
@@ -364,7 +321,6 @@ function formatarData(data) {
 document.addEventListener('submit', async function (event) {
   if (event.target.id === 'change-password-form') {
     event.preventDefault();
-    console.log('Enviando formulário de alteração de senha');
     const newPassword = document.getElementById('new-password').value.trim();
     const confirmPassword = document.getElementById('confirm-password').value.trim();
     if (!newPassword || !confirmPassword) {
@@ -382,7 +338,6 @@ document.addEventListener('submit', async function (event) {
         body: `new_password=${encodeURIComponent(newPassword)}`,
       });
       const data = await response.json();
-      console.log('Resposta da API:', data);
       if (data.success) {
         showModal('Senha alterada com sucesso!');
         closeChangePasswordModal();
@@ -390,7 +345,6 @@ document.addEventListener('submit', async function (event) {
         showModal(`Erro: ${data.error || 'Falha ao alterar senha'}`);
       }
     } catch (error) {
-      console.error('Erro ao alterar senha:', error);
       showModal(`Erro ao conectar com o servidor: ${error.message}`);
     }
   }
@@ -409,13 +363,11 @@ document.addEventListener('click', function (event) {
   const changePasswordModalContent = changePasswordModal?.querySelector('.modal-content');
   const changePasswordBtn = document.getElementById('change-password-btn');
   if (isOpeningChangePasswordModal) {
-    console.log('Ignorando clique global enquanto change-password-modal está abrindo');
     return;
   }
   if (changePasswordModal && changePasswordModalContent && changePasswordModal.style.display === 'flex') {
     setTimeout(() => {
       if (!changePasswordModalContent.contains(event.target) && !changePasswordBtn.contains(event.target)) {
-        console.log('Fechando change-password-modal por clique fora');
         closeChangePasswordModal();
       }
     }, 0);
@@ -423,7 +375,6 @@ document.addEventListener('click', function (event) {
 });
 
 window.onload = async function () {
-  console.log('Executando window.onload em script.js');
   try {
     const response = await fetch('api.php?action=check_session', {
       method: 'GET',
@@ -439,23 +390,15 @@ window.onload = async function () {
         nome: data.nome,
         tipo: data.tipo,
       };
-      console.log('Usuário autenticado:', currentUser);
       const mainContainer = document.querySelector('#main-container');
       const userName = document.querySelector('#user-name');
       const manageUsersBtn = document.querySelector('#manage-users-btn');
-      console.log('Verificando elementos da interface:', {
-        mainContainer: !!mainContainer,
-        userName: !!userName,
-        manageUsersBtn: !!manageUsersBtn,
-      });
       if (!mainContainer) {
-        console.error('Elemento main-container não encontrado');
         showModal('Erro: Interface principal não encontrada');
         window.location.href = 'index.php';
         return;
       }
       if (!userName) {
-        console.error('Elemento user-name não encontrado');
         showModal('Erro: Nome do usuário não encontrado na interface');
         window.location.href = 'index.php';
         return;
@@ -468,11 +411,9 @@ window.onload = async function () {
       await atualizarInterface();
       startLancheRefresh();
     } else {
-      console.log('Sessão inválida, redirecionando para index.php');
       window.location.href = 'index.php';
     }
   } catch (error) {
-    console.error('Erro ao verificar sessão:', error);
     showModal(`Erro ao carregar dados: ${error.message}`);
     window.location.href = 'index.php';
   }

@@ -22,7 +22,7 @@ if (isset($_SESSION['user_id'])) {
 <body class="login-page">
     <div id="login-container">
         <div class="login-card">
-            <h2><i class="fas fa-sign-in-alt"></i> Login</h2>
+            <h2><i class="fas fa-sign-in-alt"></i> Login - Controle de Lanches</h2>
             <form id="login-form" onsubmit="event.preventDefault(); login();">
                 <div class="input-group">
                     <i class="fas fa-user"></i>

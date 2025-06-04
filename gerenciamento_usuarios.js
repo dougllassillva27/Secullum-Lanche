@@ -1,8 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
-  console.log('gerenciamento_usuarios.js carregado');
   loadUsers();
 
-  // Adicionar eventos de clique para fechar modais ao clicar fora
   document.getElementById('user-modal').addEventListener('click', function (event) {
     if (event.target.classList.contains('modal')) {
       closeUserModal();
@@ -32,11 +30,9 @@ function escapeHtml(str) {
 }
 
 async function loadUsers() {
-  console.log('Iniciando loadUsers');
   try {
     const userList = document.getElementById('user-list');
     if (!userList) {
-      console.error('Erro: Elemento #user-list não encontrado');
       showMessageModal('Erro: Não foi possível carregar a lista de usuários.');
       return;
     }
@@ -46,7 +42,6 @@ async function loadUsers() {
       throw new Error(`Erro HTTP ${response.status}`);
     }
     const usuarios = await response.json();
-    console.log('Resposta da API:', usuarios);
 
     if (Array.isArray(usuarios)) {
       userList.innerHTML = '';
@@ -55,7 +50,6 @@ async function loadUsers() {
         return;
       }
       usuarios.forEach((user) => {
-        console.log('Processando usuário:', { id: user.id, nome: user.nome, tipo: user.tipo });
         const card = document.createElement('div');
         card.className = 'user-box';
         const escapedNome = escapeHtml(user.nome);
@@ -66,7 +60,6 @@ async function loadUsers() {
         };
         const tipoNormalizado = (user.tipo || 'user').toLowerCase();
         const tipoTexto = tipoMap[tipoNormalizado] || 'Usuário';
-        console.log(`Usuário ${user.nome}: tipo=${tipoNormalizado}, exibido=${tipoTexto}`);
         card.innerHTML = `
           <h3>${escapedNome}</h3>
           <p>Tipo: ${tipoTexto}</p>
@@ -76,26 +69,21 @@ async function loadUsers() {
         `;
         userList.appendChild(card);
       });
-      console.log('Cards renderizados:', userList.children.length);
     } else {
-      console.error('Resposta inválida:', usuarios);
       showMessageModal('Erro ao carregar usuários: ' + (usuarios.error || 'Resposta inválida'));
     }
   } catch (error) {
-    console.error('Erro em loadUsers:', error);
     showMessageModal('Erro ao carregar usuários: ' + error.message);
   }
 }
 
 function showMessageModal(message) {
-  console.log('Exibindo mensagem:', message);
   const modal = document.getElementById('message-modal');
   const modalMessage = document.getElementById('modal-message');
   if (modal && modalMessage) {
     modalMessage.textContent = message;
     modal.style.display = 'flex';
   } else {
-    console.error('Modal de mensagem não encontrado');
     alert('Erro: ' + message);
   }
 }
@@ -108,7 +96,6 @@ function closeMessageModal() {
 }
 
 function openUserModal(title, id = '', nome = '', tipo = 'user', isEditMode = false) {
-  console.log('Abrindo user modal:', { title, id, nome, tipo, isEditMode });
   const modal = document.getElementById('user-modal');
   const modalTitle = document.getElementById('user-modal-title');
   const userId = document.getElementById('user-id');
@@ -118,7 +105,6 @@ function openUserModal(title, id = '', nome = '', tipo = 'user', isEditMode = fa
   const passwordInputGroup = document.querySelector('.password-form-group');
 
   if (!modal || !modalTitle || !userId || !userName || !userType || !passwordInputGroup) {
-    console.error('Erro: Elementos do modal de usuário não encontrados');
     showMessageModal('Erro: Não foi possível abrir o formulário.');
     return;
   }
@@ -169,12 +155,10 @@ function addUser() {
 }
 
 function openPasswordModal(id) {
-  console.log('Abrindo modal de senha para ID:', id);
   const modal = document.getElementById('password-modal');
   const userId = document.getElementById('password-user-id');
   const newPassword = document.getElementById('new-password');
   if (!modal || !userId || !newPassword) {
-    console.error('Erro: Elementos do modal de senha não encontrados');
     showMessageModal('Erro: Não foi possível abrir o formulário de senha.');
     return;
   }
@@ -193,12 +177,10 @@ function closePasswordModal() {
 }
 
 function openDeleteModal(id, nome) {
-  console.log('Abrindo modal de exclusão para ID:', id, 'Nome:', nome);
   const modal = document.getElementById('delete-modal');
   const userId = document.getElementById('delete-user-id');
   const userName = document.getElementById('delete-user-name');
   if (!modal || !userId || !userName) {
-    console.error('Erro: Elementos do modal de exclusão não encontrados');
     showMessageModal('Erro: Não foi possível abrir a confirmação de exclusão.');
     return;
   }
@@ -216,7 +198,6 @@ function closeDeleteModal() {
 
 async function confirmDelete() {
   const id = document.getElementById('delete-user-id').value;
-  console.log('Confirmando exclusão para ID:', id);
   try {
     const response = await fetch('api.php?action=delete_user', {
       method: 'POST',
@@ -224,7 +205,6 @@ async function confirmDelete() {
       body: `id=${encodeURIComponent(id)}`,
     });
     const data = await response.json();
-    console.log('Resposta da exclusão:', data);
     if (data.success) {
       showMessageModal('Usuário excluído com sucesso!');
       closeDeleteModal();
@@ -233,7 +213,6 @@ async function confirmDelete() {
       showMessageModal('Erro ao excluir usuário: ' + (data.error || 'Falha desconhecida'));
     }
   } catch (error) {
-    console.error('Erro ao excluir:', error);
     showMessageModal('Erro ao excluir usuário: ' + error.message);
   }
 }
@@ -246,7 +225,6 @@ document.addEventListener('submit', async function (event) {
     const senha = document.getElementById('user-senha').value;
     const tipo = document.getElementById('user-tipo').value;
     const action = id ? 'edit_user' : 'add_user';
-    console.log('Enviando user-form:', { id, nome, tipo, action });
 
     try {
       const body = id ? `id=${encodeURIComponent(id)}&nome=${encodeURIComponent(nome)}&tipo=${encodeURIComponent(tipo)}` : `nome=${encodeURIComponent(nome)}&senha=${encodeURIComponent(senha)}&tipo=${encodeURIComponent(tipo)}`;
@@ -256,7 +234,6 @@ document.addEventListener('submit', async function (event) {
         body,
       });
       const data = await response.json();
-      console.log('Resposta do user-form:', data);
       if (data.success) {
         showMessageModal(id ? 'Usuário atualizado com sucesso!' : 'Usuário adicionado com sucesso!');
         closeUserModal();
@@ -265,13 +242,11 @@ document.addEventListener('submit', async function (event) {
         showMessageModal('Erro: ' + (data.error || 'Falha desconhecida'));
       }
     } catch (error) {
-      console.error('Erro no user-form:', error);
       showMessageModal('Erro: ' + error.message);
     }
   } else if (event.target.id === 'password-form') {
     const id = document.getElementById('password-user-id').value;
     const senha = document.getElementById('new-password').value.trim();
-    console.log('Enviando password-form:', { id, senha: senha ? '[senha presente]' : '[senha vazia]' });
 
     if (!id || !senha) {
       showMessageModal('Erro: ID e senha são obrigatórios');
@@ -285,7 +260,6 @@ document.addEventListener('submit', async function (event) {
         body: `id=${encodeURIComponent(id)}&senha=${encodeURIComponent(senha)}`,
       });
       const data = await response.json();
-      console.log('Resposta do password-form:', data);
       if (data.success) {
         showMessageModal('Senha alterada com sucesso!');
         closePasswordModal();
@@ -293,7 +267,6 @@ document.addEventListener('submit', async function (event) {
         showMessageModal('Erro ao alterar senha: ' + (data.error || 'Falha desconhecida'));
       }
     } catch (error) {
-      console.error('Erro no password-form:', error);
       showMessageModal('Erro ao alterar senha: ' + error.message);
     }
   }

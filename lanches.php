@@ -6,7 +6,6 @@ if (!isset($_SESSION['user_id'])) {
 }
 include_once $_SERVER['DOCUMENT_ROOT'] . '/inc/versao.php';
 $base = '/Secullum/Lanche';
-error_log('lanches.php carregado, base: ' . $base);
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -31,7 +30,6 @@ error_log('lanches.php carregado, base: ' . $base);
             </div>
             <p>Bem-vindo, <span id="user-name"></span></p>
         </header>
-        <!-- Seção de usuário, visível apenas para não-admins -->
         <section class="user-container" id="user-container" style="display: none;"></section>
         <section>
             <h2><i class="fas fa-coffee"></i> Pessoas em Lanche</h2><br>
@@ -84,7 +82,8 @@ error_log('lanches.php carregado, base: ' . $base);
             <form id="change-password-form">
                 <div class="input-group">
                     <i class="fas fa-lock"></i>
-                    <input type="password" id="new-password" placeholder="Nova Senha" required>
+                    <input type="password" id="new небольшой
+                    -password" placeholder="Nova Senha" required>
                 </div>
                 <div class="input-group">
                     <i class="fas fa-lock"></i>
