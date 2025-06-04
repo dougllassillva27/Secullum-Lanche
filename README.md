@@ -29,7 +29,7 @@ Bem-vindo ao **Secullum Lanche**, um sistema web para controle de lanches de esp
   - TCPDF para geração de relatórios em PDF
 - **Banco de Dados**:
   - MySQL
-  - Tabelas: `usuarios`, `lanches`
+  - Tabelas: `usuarios`, `lanches`, `estado_lanches`
 - **Estilização**:
   - CSS customizado com layout responsivo e modais animados
 
