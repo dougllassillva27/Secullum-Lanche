@@ -1,4 +1,27 @@
 <?php
+/**
+ * MIT License
+ *
+ * Copyright (c) 2025 Douglas Silva
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 session_start();
 include_once $_SERVER['DOCUMENT_ROOT'] . '/inc/versao.php';
 $base = '/Secullum/Lanche';
@@ -14,6 +37,27 @@ if (isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Meta Tags Básicas -->
+    <meta name="description" content="Secullum Controle de Lanches" />
+    <meta name="keywords" content="site, links, lanches, Secullum" />
+    <meta name="author" content="Douglas Silva" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:title" content="Secullum Controle de Lanches" />
+    <meta property="og:description" content="Secullum Controle de Lanches" />
+    <meta property="og:url" content="https://www.dougllassillva27.com.br" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://dougllassillva27.com.br/<?= versao("$base/logo-social-share.webp") ?>">
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:site_name" content="Secullum Controle de Lanches" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Secullum Controle de Lanches" />
+    <meta name="twitter:description" content="Secullum Controle de Lanches" />
+    <meta name="twitter:image" contcontent="https://dougllassillva27.com.br/<?= versao("$base/logo-social-share.webp") ?>">
     <title>Login - Controle de Lanches</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
