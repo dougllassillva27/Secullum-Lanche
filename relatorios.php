@@ -39,6 +39,9 @@ $base = '/Secullum/Lanche';
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="<?= versao("$base/relatorios.css") ?>?v=2.6">
+    <script>
+        const AppBaseUrl = '<?= $base ?>';
+    </script>
 </head>
 <body>
     <div id="main-container">

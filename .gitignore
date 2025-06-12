@@ -7,3 +7,4 @@ sem_users/
 com_users_logs/
 db_config.php
 com_users_sem_logs/
+schema.sql

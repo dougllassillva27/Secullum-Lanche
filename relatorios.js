@@ -269,14 +269,22 @@ async function gerarRelatorio() {
     return;
   }
   try {
-    let url = 'api.php?action=report';
+    let url = `${AppBaseUrl}/api.php?action=report`;
     const params = new URLSearchParams();
     if (currentFilter.inicio) params.append('data_inicio', currentFilter.inicio);
     if (currentFilter.fim) params.append('data_fim', currentFilter.fim);
     if (currentFilter.users.length > 0) params.append('users', currentFilter.users.join(','));
     if (currentFilter.duration === 'above15') params.append('duration', 'above15');
     url += `&${params.toString()}`;
-    window.open(url, '_blank');
+
+    const isInsideIframe = window.self !== window.top;
+
+    if (isInsideIframe) {
+      const targetOrigin = 'https://dougllassillva27.com.br';
+      window.parent.postMessage({ type: 'openReport', url: url }, targetOrigin);
+    } else {
+      window.open(url, '_blank');
+    }
   } catch (error) {
     showModal(`Erro ao gerar relatório: ${error.message}`);
   }
